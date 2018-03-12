@@ -113,8 +113,8 @@ items:
     selector:
       matchLabels:
         app: che
-    strategy:
-      type: Recreate
+    # strategy:
+    #   type: Recreate
     template:
       metadata:
         annotations:
