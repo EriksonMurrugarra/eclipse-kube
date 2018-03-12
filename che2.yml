@@ -295,15 +295,15 @@ items:
           - mountPath: /data
             name: che-data-volume
         serviceAccountName: che
-          volumeClaimTemplates:
-          - metadata:
-              name: che-data-volume
-            spec:
-              storageClassName: manual
-              accessModes: [ "ReadWriteOnce" ]
-              resources:
-                requests:
-                  storage: 1Gi
+    volumeClaimTemplates:
+    - metadata:
+        name: che-data-volume
+      spec:
+        storageClassName: manual
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 1Gi
         # volumes:
         # - name: che-data-volume
         #   persistentVolumeClaim:
