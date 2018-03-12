@@ -27,7 +27,7 @@ items:
   metadata:
     labels:
       app: che
-    name: che-host
+    name: che-service
   spec:
     ports:
     - name: http
@@ -99,7 +99,7 @@ items:
       http:
         paths:
         - backend:
-            serviceName: che-host
+            serviceName: che-service
             servicePort: 8080
 - apiVersion: apps/v1beta2
   kind: StatefulSet
@@ -108,6 +108,7 @@ items:
       app: che
     name: che
   spec:
+    serviceName: che-service
     replicas: 1
     revisionHistoryLimit: 2
     selector:
