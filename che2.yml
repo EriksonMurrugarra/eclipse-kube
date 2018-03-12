@@ -296,6 +296,8 @@ items:
           - mountPath: /data
             name: che-data-volume
         serviceAccountName: che
+        imagePullSecrets:
+        - name: regsecret
     volumeClaimTemplates:
     - metadata:
         name: che-data-volume
