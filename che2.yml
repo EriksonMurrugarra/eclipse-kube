@@ -95,7 +95,7 @@ items:
       nginx.ingress.kubernetes.io/proxy-connect-timeout: "3600"
   spec:
     rules:
-    - host: che.10-118-135-252.ebiz.verizon.com
+    - host: products-app.kube-dev.ebiz.verizon.com
       http:
         paths:
         - backend:
