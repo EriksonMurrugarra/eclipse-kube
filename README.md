@@ -26,4 +26,4 @@ Once the Echo service is running execute the following command to create the ing
 
 Eclipse Che is being served using NodePorts. To access the dashboard navigate to the following url:
 
-> http://<K8-MASTER-IP>:30123ee
+> http://K8_MASTER_IP:30123
