@@ -15,7 +15,7 @@ items:
     accessModes:                
       - ReadWriteOnce           
     hostPath:                   
-      path: "/var/lib/kubelet/chedata" 
+      path: "/apps/opt/che-vol" 
 - apiVersion: v1
   kind: ServiceAccount
   metadata:
@@ -27,30 +27,28 @@ items:
   metadata:
     labels:
       app: che
-    name: che-service
+    name: che-host
   spec:
     ports:
     - name: http
       port: 8080
       protocol: TCP
       targetPort: 8080
-      nodePort: 30123 
-    type: NodePort
     selector:
       app: che
-# - apiVersion: v1
-#   kind: PersistentVolumeClaim
-#   metadata:
-#     labels:
-#       app: che
-#     name: che-data-volume
-#   spec:
-#     storageClassName: manual
-#     accessModes:
-#     - ReadWriteOnce
-#     resources:
-#       requests:
-#         storage: 2Gi
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    labels:
+      app: che
+    name: che-data-volume
+  spec:
+    storageClassName: manual
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: 2Gi
 - apiVersion: v1
   kind: ConfigMap
   metadata:
@@ -58,13 +56,13 @@ items:
       app: che
     name: che
   data:
-    CHE_HOST: "10.118.130.34"
+    CHE_HOST: "10-118-135-252.ebiz.verizon.com"
     CHE_PORT: "8080"
-    CHE_API: "http://10.118.130.34:30123/api"
-    CHE_WEBSOCKET_ENDPOINT:  ws://10.118.130.34:30123/api/websocket
+    CHE_API: "http://10-118-135-252.ebiz.verizon.com/api"
+    CHE_WEBSOCKET_ENDPOINT:  ws://10-118-135-252.ebiz.verizon.com/api/websocket
     CHE_DEBUG_SERVER: "true"
     CHE_INFRASTRUCTURE_ACTIVE: kubernetes
-    CHE_INFRA_KUBERNETES_BOOTSTRAPPER_BINARY__URL: http://10.118.130.34:30123/agent-binaries/linux_amd64/bootstrapper/bootstrapper
+    CHE_INFRA_KUBERNETES_BOOTSTRAPPER_BINARY__URL: http://10-118-135-252.ebiz.verizon.com/agent-binaries/linux_amd64/bootstrapper/bootstrapper
     CHE_INFRA_KUBERNETES_MACHINE__START__TIMEOUT__MIN: "5"
     CHE_INFRA_KUBERNETES_MASTER__URL: ""
     CHE_INFRA_KUBERNETES_OAUTH__TOKEN: ""
@@ -86,10 +84,6 @@ items:
     JAVA_OPTS: "-XX:MaxRAMFraction=2 -XX:+UseParallelGC -XX:MinHeapFreeRatio=10 -XX:MaxHeapFreeRatio=20 -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -Dsun.zip.disableMemoryMapping=true -Xms20m "
     CHE_WORKSPACE_AUTO_START: "false"
     CHE_INFRA_KUBERNETES_INGRESS_ANNOTATIONS__JSON: '{"nginx.ingress.kubernetes.io/rewrite-target": "/","nginx.ingress.kubernetes.io/ssl-redirect": "true","nginx.ingress.kubernetes.io/proxy-connect-timeout": "3600","nginx.ingress.kubernetes.io/proxy-read-timeout": "3600"}'
-    CHE_INFRA_KUBERNETES_PVC_ENABLED: "true"
-    CHE_INFRA_KUBERNETES_PVC_NAME: "che-data-volume-che-0"
-    CHE_INFRA_KUBERNETES_PVC_QUANTITY: "10Gi"
-    CHE_INFRA_KUBERNETES_PVC_ACCESS__MODE: "ReadWriteOnce"
 - apiVersion: extensions/v1beta1
   kind: Ingress
   metadata:
@@ -100,27 +94,26 @@ items:
       nginx.ingress.kubernetes.io/proxy-connect-timeout: "3600"
   spec:
     rules:
-    - host: products-app.kube-dev.ebiz.verizon.com
+    - host: 10-118-135-252.ebiz.verizon.com
       http:
         paths:
         - backend:
-            serviceName: che-service
+            serviceName: che-host
             servicePort: 8080
-- apiVersion: apps/v1beta2
-  kind: StatefulSet
+- apiVersion: extensions/v1beta1
+  kind: Deployment
   metadata:
     labels:
       app: che
     name: che
   spec:
-    serviceName: che-service
     replicas: 1
     revisionHistoryLimit: 2
     selector:
       matchLabels:
         app: che
-    # strategy:
-    #   type: Recreate
+    strategy:
+      type: Recreate
     template:
       metadata:
         annotations:
@@ -270,27 +263,7 @@ items:
               configMapKeyRef:
                 key: CHE_INFRA_KUBERNETES_INGRESS_ANNOTATIONS__JSON
                 name: che
-          - name: CHE_INFRA_KUBERNETES_PVC_ENABLED
-            valueFrom:
-              configMapKeyRef:
-                key: CHE_INFRA_KUBERNETES_PVC_ENABLED
-                name: che
-          - name: CHE_INFRA_KUBERNETES_PVC_NAME
-            valueFrom:
-              configMapKeyRef:
-                key: CHE_INFRA_KUBERNETES_PVC_NAME
-                name: che
-          - name: CHE_INFRA_KUBERNETES_PVC_QUANTITY
-            valueFrom:
-              configMapKeyRef:
-                key: CHE_INFRA_KUBERNETES_PVC_QUANTITY
-                name: che
-          - name: CHE_INFRA_KUBERNETES_PVC_ACCESS__MODE
-            valueFrom:
-              configMapKeyRef:
-                key: CHE_INFRA_KUBERNETES_PVC_ACCESS__MODE
-                name: che
-          image: eclipse/che-server:6.2.0
+          image: eclipse/che-server:6.1.0
           imagePullPolicy: Always
           livenessProbe:
             httpGet:
@@ -321,18 +294,7 @@ items:
           - mountPath: /data
             name: che-data-volume
         serviceAccountName: che
-        imagePullSecrets:
-        - name: regsecret
-    volumeClaimTemplates:
-    - metadata:
-        name: che-data-volume
-      spec:
-        storageClassName: manual
-        accessModes: [ "ReadWriteOnce" ]
-        resources:
-          requests:
-            storage: 1Gi
-        # volumes:
-        # - name: che-data-volume
-        #   persistentVolumeClaim:
-        #     claimName: che-data-volume
+        volumes:
+        - name: che-data-volume
+          persistentVolumeClaim:
+            claimName: che-data-volume
