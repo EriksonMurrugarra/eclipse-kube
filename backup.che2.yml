@@ -58,13 +58,13 @@ items:
       app: che
     name: che
   data:
-    CHE_HOST: "10.118.130.34"
+    CHE_HOST: "10-118-130-34.ebiz.verizon.com"
     CHE_PORT: "8080"
-    CHE_API: "http://10.118.130.34:30123/api"
-    CHE_WEBSOCKET_ENDPOINT:  ws://10.118.130.34:30123/api/websocket
+    CHE_API: "http://10-118-130-34.ebiz.verizon.com/api"
+    CHE_WEBSOCKET_ENDPOINT:  ws://10-118-130-34.ebiz.verizon.com/api/websocket
     CHE_DEBUG_SERVER: "true"
     CHE_INFRASTRUCTURE_ACTIVE: kubernetes
-    CHE_INFRA_KUBERNETES_BOOTSTRAPPER_BINARY__URL: http://10.118.130.34:30123/agent-binaries/linux_amd64/bootstrapper/bootstrapper
+    CHE_INFRA_KUBERNETES_BOOTSTRAPPER_BINARY__URL: http://10-118-130-34.ebiz.verizon.com/agent-binaries/linux_amd64/bootstrapper/bootstrapper
     CHE_INFRA_KUBERNETES_MACHINE__START__TIMEOUT__MIN: "5"
     CHE_INFRA_KUBERNETES_MASTER__URL: ""
     CHE_INFRA_KUBERNETES_OAUTH__TOKEN: ""
