@@ -11,7 +11,7 @@ This repository contains configuration files to deploy Eclipse Che on Kubernetes
 
 The only way that Che-Server can create workspaces is by creating an Ingress Controller. It is required for the Che Architecture. run the following commands:
 
-> kubectl create -f echo-service.yml -n che
+> kubectl create -f echo-service.yml -n default
 
 Once the Echo service is running execute the following command to create the ingress:
 
