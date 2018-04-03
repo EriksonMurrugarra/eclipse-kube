@@ -59,6 +59,11 @@ items:
     name: che
   data:
     CHE_HOST: "10.118.130.34"
+#    CHE_HOST_IP: "10.118.130.34"
+#    CHE_DOCKER_MACHINE_HOST: "10.118.130.34"
+#    DOCKER_MACHINE_HOST: "10.118.130.34"
+#    DOCKER_HOST: "10.118.130.34"
+    CHE_DOCKER_IP_EXTERNAL: "10.118.130.34"
     CHE_PORT: "8080"
     CHE_API: "http://10.118.130.34:30123/api"
     CHE_WEBSOCKET_ENDPOINT:  ws://10.118.130.34:30123/api/websocket
@@ -100,7 +105,7 @@ items:
       nginx.ingress.kubernetes.io/proxy-connect-timeout: "3600"
   spec:
     rules:
-    - host: products-app.kube-dev.ebiz.verizon.com
+    - host: eclipse.10-118-130-34.ebiz.verizon.com
       http:
         paths:
         - backend:
@@ -134,6 +139,31 @@ items:
             valueFrom:
               configMapKeyRef:
                 key: CHE_HOST
+                name: che
+#          - name: CHE_HOST_IP
+#            valueFrom:
+#              configMapKeyRef:
+#                key: CHE_HOST_IP
+#                name: che
+#          - name: CHE_DOCKER_MACHINE_HOST
+#            valueFrom:
+#              configMapKeyRef:
+#                key: CHE_DOCKER_MACHINE_HOST
+#                name: che
+#          - name: DOCKER_MACHINE_HOST
+#            valueFrom:
+#              configMapKeyRef:
+#                key: DOCKER_MACHINE_HOST
+#                name: che
+#          - name: DOCKER_HOST
+#            valueFrom:
+#              configMapKeyRef:
+#                key: DOCKER_HOST
+#                name: che
+          - name: CHE_DOCKER_IP_EXTERNAL
+            valueFrom:
+              configMapKeyRef:
+                key: CHE_DOCKER_IP_EXTERNAL
                 name: che
           - name: CHE_PORT
             valueFrom:
